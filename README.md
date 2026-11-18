@@ -9,9 +9,13 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?style=flat&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![YOLOv8](https://img.shields.io/badge/YOLOv8-Pose-FF4500?style=flat&logo=ultralytics&logoColor=white)](https://ultralytics.com)
+[![Gemini](https://img.shields.io/badge/Gemini-Vision-8E75B2?style=flat&logo=google&logoColor=white)](https://ai.google.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 🏆 **1st Runners-Up — Hackathon 2026**
+
+### 🌐 [Try the Live Demo →](https://site-safety-ppe.vercel.app/)
+*Scan a QR, take a photo, get instant AI PPE analysis — no setup needed*
 
 </div>
 
@@ -21,82 +25,96 @@
 
 Construction sites are dangerous. Workers without proper PPE — hard hats and high-visibility vests — are at serious risk of injury. Manual supervision is inconsistent and expensive.
 
-**Site Safety Watch** solves this with a live AI detection pipeline that:
+**Site Safety Watch** is a full-stack AI safety system built in two complementary modes to cover every real-world deployment scenario:
 
-- 📡 Streams video from a phone camera over Wi-Fi
-- 🤖 Runs **YOLOv8-Pose** to detect workers and extract 17 body keypoints per person
-- 🦺 Checks each detected worker for a **hard hat** and **hi-vis vest** using HSV color analysis on anatomically-precise regions (head ROI from nose keypoint, torso ROI from shoulder keypoints)
-- 🟢 / 🔴 Labels every worker **COMPLIANT** or **VIOLATION** in real time
-- 📊 Streams the annotated feed to a **React dashboard** that shows live stats, risk signals, compliance scores, and a daily PDF-ready report
+- 🖥️ **Monitoring Mode** — a high-performance local station that watches a live camera feed 24/7, running YOLOv8-Pose on every frame to flag violations in real time
+- 📱 **Inspection Mode** — a deployed PWA any inspector can open on their phone, snap a photo, and get instant Gemini Vision analysis with per-worker bounding boxes and a compliance report
+
+---
+
+## ⚡ Two-Mode Architecture
+
+| | 🖥️ Monitoring Mode *(this repo)* | 📱 Inspection Mode *([site_safety_ppe](https://github.com/yuvadepcodes/site_safety_ppe))* |
+|---|---|---|
+| **Input** | Live CCTV / phone camera stream | Single photo from any device |
+| **AI Engine** | YOLOv8-Pose (local, real-time) | Gemini Vision API (cloud) |
+| **Output** | Annotated live video feed | Per-worker bounding boxes + full risk report |
+| **Deployment** | On-site machine (max FPS, zero cloud latency) | Vercel + PWA — scan a QR, works instantly |
+| **Best for** | Dedicated site monitoring station | Field safety inspector, remote audit, demo |
+| **Offline?** | Yes — runs fully local | PWA-ready, works offline after first load |
+
+Both modes were presented at the hackathon. Judges scanned a QR code to try the live inspection on their own phones — while the monitoring station ran in real time on the demo laptop.
 
 ---
 
 ## ✨ Features
 
+### 🖥️ Monitoring Mode (this repo)
 | Feature | Details |
 |---|---|
 | **Real-time detection** | Threaded camera stream eliminates network lag; MJPEG streamed over FastAPI |
 | **Pose-aware PPE check** | Uses skeleton keypoints to crop anatomically correct head/torso regions — not just the bounding box |
 | **Multi-person tracking** | Detects and labels every worker in frame simultaneously |
-| **Live compliance score** | Aggregated PPE compliance rate displayed on the dashboard |
+| **Live compliance score** | Aggregated PPE compliance rate on the dashboard |
 | **Risk signal feed** | Live alerts panel with severity levels (High / Medium / Low) |
 | **Fullscreen camera mode** | One-click fullscreen for the live feed |
 | **Daily report export** | Print-ready daily safety report from the browser |
-| **Offline fallback** | Dashboard gracefully handles backend being offline |
+
+### 📱 Inspection Mode ([live app](https://site-safety-ppe.vercel.app/))
+| Feature | Details |
+|---|---|
+| **Gemini Vision AI** | Structured JSON output — per-worker helmet status, vest status, bounding boxes, hazard notes |
+| **Interactive overlay** | Clickable bounding boxes on the photo for each detected worker |
+| **PWA installable** | Add to home screen on any phone, works like a native app |
+| **Daily risk report** | Log multiple inspections, build a report, export as PDF |
+| **Offline capable** | Works after first load, syncs when back online |
+| **Sample photos** | Built-in construction photos for instant one-click demo |
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ System Architecture
 
 ```
-┌─────────────────────┐        MJPEG stream        ┌──────────────────────────┐
-│   📱 Phone Camera   │ ──── Wi-Fi / IP Webcam ──► │   🐍 FastAPI Backend      │
-│  (IP Webcam app)    │                             │                          │
-└─────────────────────┘                             │  ┌────────────────────┐  │
-                                                    │  │  CameraStream      │  │
-                                                    │  │  (Threaded reader) │  │
-                                                    │  └────────┬───────────┘  │
-                                                    │           │              │
-                                                    │  ┌────────▼───────────┐  │
-                                                    │  │  YOLOv8-Pose       │  │
-                                                    │  │  Inference         │  │
-                                                    │  └────────┬───────────┘  │
-                                                    │           │              │
-                                                    │  ┌────────▼───────────┐  │
-                                                    │  │  HSV PPE Checker   │  │
-                                                    │  │  (Helmet + Vest)   │  │
-                                                    │  └────────┬───────────┘  │
-                                                    │           │              │
-                                                    │   /video_feed (MJPEG)    │
-                                                    └───────────┼──────────────┘
-                                                                │
-                                                    ┌───────────▼──────────────┐
-                                                    │   ⚛️  React Dashboard     │
-                                                    │   (Vite + TypeScript +   │
-                                                    │    Tailwind CSS)         │
-                                                    └──────────────────────────┘
+┌───────────────────────────────────────────────────────────────────┐
+│                     SITE SAFETY WATCH SYSTEM                      │
+└───────────────────────────────────────────────────────────────────┘
+                                  │
+          ┌───────────────────────┴───────────────────────┐
+          │                                               │
+          ▼                                               ▼
+┌─────────────────────┐                       ┌──────────────────────┐
+│  🖥️ MONITORING MODE  │                       │  📱 INSPECTION MODE   │
+│  (site-safety-watch) │                       │  (site_safety_ppe)   │
+└─────────────────────┘                       └──────────────────────┘
+          │                                               │
+   Phone cam (Wi-Fi)                           Photo upload / camera
+          │                                               │
+   FastAPI backend                             Vercel serverless fn
+          │                                               │
+   YOLOv8-Pose (local)                         Gemini Vision API
+          │                                               │
+   Annotated MJPEG feed                        Structured JSON
+          │                                               │
+   React dashboard                             React PWA + overlay
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-**Backend**
-- [Python 3.10+](https://python.org)
-- [FastAPI](https://fastapi.tiangolo.com) — async REST + MJPEG streaming
-- [Ultralytics YOLOv8-Pose](https://ultralytics.com) — real-time pose estimation
-- [OpenCV](https://opencv.org) — video capture, HSV color analysis, frame annotation
-- [Uvicorn](https://www.uvicorn.org) — ASGI server
+**Monitoring Mode (this repo)**
+- [Python 3.10+](https://python.org) · [FastAPI](https://fastapi.tiangolo.com) · [Uvicorn](https://www.uvicorn.org)
+- [Ultralytics YOLOv8-Pose](https://ultralytics.com) · [OpenCV](https://opencv.org)
+- [React 19](https://react.dev) · [TypeScript 7](https://typescriptlang.org) · [Tailwind CSS 4](https://tailwindcss.com) · [Vite 8](https://vitejs.dev)
 
-**Frontend**
-- [React 19](https://react.dev) + [TypeScript 7](https://typescriptlang.org)
-- [Vite 8](https://vitejs.dev) — lightning-fast dev + build
-- [Tailwind CSS 4](https://tailwindcss.com) — utility-first styling
-- Custom glass-morphism dark dashboard UI
+**Inspection Mode ([site_safety_ppe](https://github.com/yuvadepcodes/site_safety_ppe))**
+- [Gemini Vision API](https://ai.google.dev) (`gemini-flash` with structured output schema)
+- [Vercel](https://vercel.com) serverless functions · [React 19](https://react.dev) · [TypeScript](https://typescriptlang.org)
+- PWA (installable, offline-capable) · PDF report generation
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started — Monitoring Mode
 
 ### Prerequisites
 
@@ -104,8 +122,6 @@ Construction sites are dangerous. Workers without proper PPE — hard hats and h
 - Node.js 18+
 - An Android phone with the **[IP Webcam](https://play.google.com/store/apps/details?id=com.pas.webcam)** app installed
 - Phone and laptop on the **same Wi-Fi network**
-
----
 
 ### 1. Clone the repo
 
@@ -152,17 +168,28 @@ npm run dev
 # Dashboard running at http://localhost:5173
 ```
 
+> **For the Inspection Mode (deployed PWA):** visit [site-safety-ppe.vercel.app](https://site-safety-ppe.vercel.app/) — no setup needed. See the [site_safety_ppe repo](https://github.com/yuvadepcodes/site_safety_ppe) for self-hosting instructions.
+
 ---
 
 ## 📡 How the PPE Detection Works
 
+### Monitoring Mode — YOLOv8-Pose (local)
+
 For each detected person, the model extracts 17 body keypoints. We then:
 
-1. **Hard Hat check** — Crop a region above the nose keypoint. Run HSV color masking for yellow/orange (`[20–35°]`) and white (`high V, low S`) helmet colors. Flag compliant if pixel count exceeds threshold.
+1. **Hard Hat check** — Crop a region above the nose keypoint. Run HSV color masking for yellow/orange (`[20–35°]`) and white (`high V, low S`) helmet colors.
+2. **Hi-Vis Vest check** — Crop the torso between the shoulder keypoints. Run HSV masking for the characteristic orange/yellow reflective vest range (`[15–38°]`).
+3. **Status overlay** — 🟢 green box = compliant, 🔴 red box = violation, with a live badge: `HELMET: OK | VEST: OK`.
 
-2. **Hi-Vis Vest check** — Crop the torso region between the shoulder keypoints. Run HSV masking for the characteristic orange/yellow reflective vest range (`[15–38°]`). Flag compliant if pixel count exceeds threshold.
+### Inspection Mode — Gemini Vision (cloud)
 
-3. **Status overlay** — Draw a colored bounding box (🟢 green = compliant, 🔴 red = violation) with a status badge: `HELMET: OK | VEST: OK` or the specific missing items.
+A single photo is sent to the Gemini Vision API with a structured output schema. The model returns:
+- Per-worker `helmetStatus` and `vestStatus` (`worn` / `missing` / `improper` / `not_visible`)
+- YOLO-style bounding boxes `[ymin, xmin, ymax, xmax]` for each worker, their helmet, and their vest
+- Overall `safetyScore` (0–100), `overallRiskLevel`, site hazards, and immediate action recommendations
+
+Server-side validation enforces compliance rules — if the model marks a worker missing a helmet but `isCompliant: true`, the API corrects it before sending the response.
 
 ---
 
@@ -182,6 +209,13 @@ site-safety-watch/
 ├── package.json
 └── vite.config.ts
 ```
+
+---
+
+## 🔗 Related
+
+- 📱 **Inspection Mode (Live PWA):** [site-safety-ppe.vercel.app](https://site-safety-ppe.vercel.app/)
+- 💻 **Inspection Mode (Repo):** [github.com/yuvadepcodes/site_safety_ppe](https://github.com/yuvadepcodes/site_safety_ppe)
 
 ---
 
