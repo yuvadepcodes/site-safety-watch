@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ SentryAI
+# 🦺 Site Safety Watch
 
 **Real-time AI-powered PPE compliance monitoring for construction sites**
 
@@ -17,11 +17,11 @@
 
 ---
 
-## 🔍 What is SentryAI?
+## 🔍 What is Site Safety Watch?
 
 Construction sites are dangerous. Workers without proper PPE — hard hats and high-visibility vests — are at serious risk of injury. Manual supervision is inconsistent and expensive.
 
-**SentryAI** solves this with a live AI detection pipeline that:
+**Site Safety Watch** solves this with a live AI detection pipeline that:
 
 - 📡 Streams video from a phone camera over Wi-Fi
 - 🤖 Runs **YOLOv8-Pose** to detect workers and extract 17 body keypoints per person
