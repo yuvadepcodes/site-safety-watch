@@ -1,17 +1,30 @@
+import os
 import cv2
 import numpy as np
 import threading
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from ultralytics import YOLO
 import uvicorn
+from dotenv import load_dotenv
 
-app = FastAPI()
+load_dotenv()
+
+app = FastAPI(title="Site Safety Watch API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
 
 # Load YOLOv8-Pose model
-model = YOLO('yolov8n-pose.pt') 
+model = YOLO('yolov8n-pose.pt')
 
-VIDEO_SOURCE = "http://10.42.0.82:8080/video" # Update with your phone's IP
+# Set VIDEO_SOURCE in your .env file (see .env.example)
+VIDEO_SOURCE = os.getenv("VIDEO_SOURCE", "http://192.168.1.100:8080/video")
 
 # --- THREADED VIDEO STREAM TO ELIMINATE NETWORK LAG ---
 class CameraStream:
@@ -153,4 +166,6 @@ def video_feed():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace; boundary=frame")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    host = os.getenv("API_HOST", "127.0.0.1")
+    port = int(os.getenv("API_PORT", 8000))
+    uvicorn.run(app, host=host, port=port)
