@@ -86,7 +86,7 @@ export default function App() {
           <div className="brand-mark">S</div>
           <div>
             <p className="eyebrow">Safety intelligence</p>
-            <h1>Site Safety Watch</h1>
+            <h1>SentryAI</h1>
           </div>
         </div>
 
