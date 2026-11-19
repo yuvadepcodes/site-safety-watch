@@ -4,15 +4,6 @@
   "version": "1.0.0",
   "description": "Real-time construction site PPE compliance monitoring using YOLOv8-Pose and a live React dashboard.",
   "type": "module",
-  "keywords": [
-    "computer-vision",
-    "yolov8-pose",
-    "ppe-detection",
-    "fastapi",
-    "react",
-    "safety-intelligence",
-    "hackathon-winner"
-  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

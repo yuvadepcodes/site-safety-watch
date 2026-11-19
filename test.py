@@ -1,16 +1,11 @@
-"""
-Site Safety Watch — Camera Stream Diagnostic & Benchmark Utility
-Tests wireless RTSP/HTTP video feed with YOLOv8-Pose inference.
-"""
-import os
 import cv2
 from ultralytics import YOLO
 
 print("Loading YOLOv8-Pose model...")
 model = YOLO("yolov8n-pose.pt")
 
-# Stream URL from environment or default IP Webcam address
-video_source = os.getenv("VIDEO_SOURCE", "http://10.42.0.82:8080/video")
+# Your phone's IP Webcam stream URL
+video_source = "http://10.42.0.82:8080/video"
 
 print(f"Connecting to phone stream at {video_source}...")
 cap = cv2.VideoCapture(video_source)

@@ -1,8 +1,3 @@
-"""
-Site Safety Watch — Computer Vision Backend
-YOLOv8-Pose Anatomical Keypoint Detection & PPE Compliance Analysis
-EWIT 2026 Hackathon (1st Runner-Up)
-"""
 import os
 import cv2
 import numpy as np

@@ -12,7 +12,7 @@
 [![Gemini](https://img.shields.io/badge/Gemini-Vision-8E75B2?style=flat&logo=google&logoColor=white)](https://ai.google.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-🏆 **1st Runners-Up — EWIT 2026 Hackathon**
+🏆 **1st Runners-Up — Hackathon 2026**
 
 ### 🌐 [Try the Live Demo →](https://site-safety-ppe.vercel.app/)
 *Scan a QR, take a photo, get instant AI PPE analysis — no setup needed*
@@ -233,6 +233,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
-Built with ❤️ for safer construction sites &nbsp;•&nbsp; 🏆 EWIT 2026 — 1st Runners-Up
+Built with ❤️ for safer construction sites &nbsp;•&nbsp; 🏆 Hackathon 2026 — 1st Runners-Up
 
 </div>
