@@ -5,7 +5,15 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        safety: {
+          emerald: "#34d399",
+          amber: "#fbbf24",
+          rose: "#f87171",
+        },
+      },
+    },
   },
   plugins: [],
 }

@@ -1,3 +1,4 @@
+# Site Safety Watch — Python Dependencies (FastAPI + YOLOv8 + OpenCV)
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
 ultralytics>=8.3.0

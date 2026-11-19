@@ -1,3 +1,7 @@
+/**
+ * Site Safety Watch — Real-Time PPE Compliance Dashboard
+ * EWIT 2026 Hackathon (1st Runner-Up)
+ */
 import { useEffect, useState } from 'react';
 
 export default function App() {

@@ -50,5 +50,5 @@ env/
 .env.local
 .env.*.local
 
-# Companion app (separate repo — cloned locally for reference)
+# Companion app (separate repo)
 site_safety_ppe/
